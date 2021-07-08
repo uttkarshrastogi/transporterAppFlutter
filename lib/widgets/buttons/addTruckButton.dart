@@ -9,8 +9,8 @@ class AddTruckButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: space_9,
+      width: space_33,
+      height: space_8,
       child: TextButton(
         style: ButtonStyle(
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -22,8 +22,7 @@ class AddTruckButton extends StatelessWidget {
         onPressed:
             () {
           Get.to(() => AddNewTruck());
-        }
-        ,
+        },
         child: Text(
           'Add Truck',
           style: TextStyle(

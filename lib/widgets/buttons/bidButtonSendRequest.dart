@@ -12,40 +12,27 @@ import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class BidButtonSendRequest extends StatelessWidget {
-  String? loadId, unitValue , bidId;
-  // int? rate;
+  String? loadId ;
+  String? bidId;
   bool? isPost;
-
 
   BidButtonSendRequest({
     this.loadId,
-    // this.rate,
-      this.unitValue,
     this.bidId,
     required this.isPost,
-}
-     );
+  });
 
   TransporterIdController tIdController = Get.find<TransporterIdController>();
 
   @override
-
   Widget build(BuildContext context) {
-
-    ProviderData providerData = Provider.of<ProviderData>(context);
-
-    return GestureDetector(
-      onTap: () {
-        isPost! ? postBidAPi(loadId, providerData.rate, tIdController.transporterId.value, unitValue) : putBidForNegotiate(bidId,  providerData.rate, unitValue);
-        Navigator.of(context).pop();
-      },
-      child: Container(
-        margin: EdgeInsets.only(right: space_3),
-        height: space_6 + 1,
-        width: space_16,
-        decoration: BoxDecoration(
-            color: darkBlueColor,
-            borderRadius: BorderRadius.circular(radius_4)),
+    ProviderData providerData =
+        Provider.of<ProviderData>(context, listen: false);
+    return Container(
+      margin: EdgeInsets.only(right: space_3),
+      height: space_6 + 1,
+      width: space_16,
+      child: TextButton(
         child: Center(
           child: Text(
             "Bid",
@@ -55,6 +42,29 @@ class BidButtonSendRequest extends StatelessWidget {
                 fontSize: size_6 + 2),
           ),
         ),
+        onPressed: providerData.bidButtonSendRequestState
+        ?
+        (){
+          isPost! ? postBidAPi(loadId, providerData.rate1,tIdController.transporterId.value, providerData.unitValue1) : putBidForNegotiate(bidId, providerData.rate1, providerData.unitValue1);
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Bidding Request Send')));
+          // providerData.updateRate("" , 'PER_TON');
+          providerData.updateBidButtonSendRequest(false);
+          Navigator.of(context).pop();
+        }
+        : null,
+
+        style: ButtonStyle(
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(radius_4),
+            )),
+            overlayColor: providerData.bidButtonSendRequestState == true
+                ? null
+                : MaterialStateProperty.all(Colors.transparent),
+            backgroundColor: providerData.bidButtonSendRequestState == true
+                ? activeButtonColor
+                : deactiveButtonColor),
       ),
     );
   }

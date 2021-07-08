@@ -17,24 +17,19 @@ class BidButtonAlertDialog extends StatefulWidget {
   String? bidId;
   bool? isPost;
 
-  BidButtonAlertDialog({
-    this.loadId,
-    this.bidId,
-    required this.isPost
-  });
+  BidButtonAlertDialog({this.loadId, this.bidId, required this.isPost});
 
   @override
   _BidButtonAlertDialogState createState() => _BidButtonAlertDialogState();
 }
 
 class _BidButtonAlertDialogState extends State<BidButtonAlertDialog> {
-  // TextEditingController rate = TextEditingController();
+
   RadioButtonOptions unitValue = RadioButtonOptions.PER_TON;
-  int? rate;
+
 
   @override
   Widget build(BuildContext context) {
-
     ProviderData providerData = Provider.of<ProviderData>(context);
 
     return AlertDialog(
@@ -102,19 +97,22 @@ class _BidButtonAlertDialogState extends State<BidButtonAlertDialog> {
                 right: space_2 - 2,
               ),
               child: TextField(
-                onChanged: (value){
-                  providerData.updateRate(int.parse(value));
-                  // rate = int.parse(value);
-                  // print(rate);
-                } ,
                 keyboardType: TextInputType.number,
                 // controller: rate,
                 decoration: InputDecoration(
-
                   hintText: "Eg 4000",
                   hintStyle: TextStyle(color: textLightColor),
                   border: InputBorder.none,
                 ),
+                onChanged: (String? rate) {
+                  if (rate == null || rate == "") {
+                    providerData.updateBidButtonSendRequest(false);
+                  } else {
+                    //TODO: bug: if we change unt value without changing rate then previous unitValue will be passed
+                    providerData.updateRate(rate , unitValue.toString());
+                    providerData.updateBidButtonSendRequest(true);
+                  }
+                },
               ),
             ),
           ),
@@ -127,10 +125,8 @@ class _BidButtonAlertDialogState extends State<BidButtonAlertDialog> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               BidButtonSendRequest(
-                  // rate: rate,
                 loadId: widget.loadId ,
-                  bidId: widget.bidId,
-                  unitValue : unitValue.toString(),
+                bidId: widget.bidId,
                 isPost: widget.isPost,
               ),
               CancelButton()
